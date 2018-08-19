@@ -11,45 +11,41 @@ endif()
 
 # find dependencies
 find_package(catkin REQUIRED COMPONENTS
+  cv_bridge
   image_transport
-  tf2_ros
-)
+  roscpp
+  tf2_ros)
+find_package(OpenCV REQUIRED)
 find_package(scigl_render REQUIRED)
 
 # packaging
 catkin_package(
  INCLUDE_DIRS include
  LIBRARIES scigl_render_ros
- CATKIN_DEPENDS image_transport tf2_ros
- DEPENDS scigl_render
+ CATKIN_DEPENDS cv_bridge image_transport roscpp tf2_ros
+ DEPENDS OpenCV scigl_render
 )
 
-###########
-## Build ##
-###########
-
-## Specify additional locations of header files
-## Your package locations should be listed before other locations
-include_directories(
-# include
-  ${catkin_INCLUDE_DIRS}
-)
 
 # library
 add_library(scigl_render_ros)
+target_sources(scigl_render_ros PRIVATE
+  src/ar_render.cpp)
 target_include_directories(scigl_render_ros PUBLIC
-  ${catkin_INCLUDE_DIRS})
+  ${catkin_INCLUDE_DIRS}
+  include)
 target_link_libraries(scigl_render_ros PUBLIC
   ${catkin_LIBRARIES}
   scigl_render)
 
 # executables
-add_executable(scigl_render_node)
-target_link_libraries(scigl_render_node
-  scigl_render_ros)
+# add_executable(scigl_render_node)
+# target_link_libraries(scigl_render_node
+#   ${OpenCV_LIBS}
+#   scigl_render_ros)
 
 # installation
-install(TARGETS scigl_render_ros scigl_render_node
+install(TARGETS scigl_render_ros # scigl_render_node
   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}

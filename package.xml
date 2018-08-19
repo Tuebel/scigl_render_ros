@@ -12,10 +12,11 @@
   <maintainer email="tim.uebelhoer@outlook.de">Tim Übelhör</maintainer>
   <license>MIT</license>
 
-  <depend>roscpp</depend>
   <doc_depend>doxygen</doc_depend>
   <buildtool_depend>catkin</buildtool_depend>
+  <depend>cv_bridge</depend>
   <depend>image_transport</depend>
+  <depend>roscpp</depend>
   <depend>scigl_render</depend>
   <depend>tf2_ros</depend>
 
