@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>scigl_render_ros</name>
+  <version>0.1.0</version>
+  <description>
+  The ros wrapper to use the scigl_render to render objects. The main purpose is
+  to render the object pose into the cameras image for augmented reality. Is a
+  nice test for your camera calibration.
+  </description>
+
+  <author email="tim.uebelhoer@outlook.de">Tim Übelhör</author>
+  <maintainer email="tim.uebelhoer@outlook.de">Tim Übelhör</maintainer>
+  <license>MIT</license>
+
+  <depend>roscpp</depend>
+  <doc_depend>doxygen</doc_depend>
+  <buildtool_depend>catkin</buildtool_depend>
+  <depend>image_transport</depend>
+  <depend>scigl_render</depend>
+  <depend>tf2_ros</depend>
+
+  <export>
+    <build_type>catkin</build_type>
+  </export>
+</package>
