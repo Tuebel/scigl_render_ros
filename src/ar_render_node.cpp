@@ -13,23 +13,18 @@ public:
   ArRenderNode() : tf_listener(tf_buffer),
                    img_transport(node_handle)
   {
-    // load members from parameters
     ros::NodeHandle private_nh("~");
     // frames
-    private_nh.param<std::string>(
-        "world_frame_id", world_frame_id, "world");
-    private_nh.param<std::string>(
-        "camera_frame_id", camera_frame_id, "world");
-    private_nh.param<std::string>(
-        "object_frame_id", object_frame_id, "world");
+    private_nh.param<std::string>("world_frame_id", world_frame_id, "world");
+    private_nh.param<std::string>("camera_frame_id", camera_frame_id, "camera");
+    private_nh.param<std::string>("object_frame_id", object_frame_id, "object");
     // camera topic
     private_nh.param<std::string>(
         "camera_base_topic", camera_base_topic, "/camera");
-    // model to render
-    private_nh.param<std::string>(
-        "model_path", model_path);
     // publisher for the augmented reality image
     ar_publisher = img_transport.advertiseCamera("/ar_camera", 1);
+    // model to render
+    private_nh.param<std::string>("model_path", model_path);
   }
 
   /*!
@@ -37,13 +32,10 @@ public:
   */
   void run()
   {
-    using namespace image_transport;
-    using namespace scigl_render_ros;
     using namespace sensor_msgs;
-    auto camera_info = init_camera();
-    ArRender ar_render(model_path, init_camera());
+    scigl_render_ros::ArRender ar_render(model_path, init_camera());
     // subscribe the images and publish the modified ones
-    CameraSubscriber subscriber =
+    image_transport::CameraSubscriber subscriber =
         img_transport.subscribeCamera(
             camera_base_topic, 1,
             [this, &ar_render](const ImageConstPtr &image, CameraInfoConstPtr info) {
@@ -67,7 +59,7 @@ private:
   // receive tf2 messages
   tf2_ros::Buffer tf_buffer;
   tf2_ros::TransformListener tf_listener;
-  // receive images
+  // receive and publish images
   std::string camera_base_topic;
   image_transport::ImageTransport img_transport;
   image_transport::CameraPublisher ar_publisher;
@@ -79,12 +71,11 @@ private:
   std::string model_path;
 
   /*!
-  Waits for a camera message and initializes the camera intrinsics.
+  Waits for a camera message and extracts the info.
   */
   sensor_msgs::CameraInfoConstPtr init_camera()
   {
     using namespace image_transport;
-    using namespace scigl_render_ros;
     using namespace sensor_msgs;
     // create a promise that will be filled when receiving the first image
     std::promise<CameraInfoConstPtr> info_promise;
@@ -107,8 +98,8 @@ int main(int argc, char **argv)
 {
   // init ros
   ros::init(argc, argv, "ar_render_node");
-  // run the ar node
   ArRenderNode node;
+  // will block/spin
   node.run();
   return EXIT_SUCCESS;
 }
