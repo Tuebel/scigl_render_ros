@@ -17,17 +17,17 @@ const int CV_TYPE = CV_8UC3;
 
 ArRender::ArRender(const std::string &model_path,
                    const sensor_msgs::CameraInfoConstPtr &camera_info,
-                   int width, int height,
                    double min_depth, double max_depth)
-    : gl_context(false, false, width, height),
-      offscreen_render(width, height, 3 * 1, INTERNAL_FORMAT),
-      camera(from_camera_info(camera_info, min_depth, max_depth)),
+    : gl_context(false, false, camera_info->width, camera_info->height),
+      offscreen_render(camera_info->width, camera_info->height,
+                       3 * 1, INTERNAL_FORMAT),
+      camera(convert_camera_info(camera_info, min_depth, max_depth)),
       model(model_path),
       shader(scigl_render::SingleTextureShader::create_shader()),
-      image_render(width, height, INTERNAL_FORMAT)
+      image_render(camera_info->width, camera_info->height, INTERNAL_FORMAT)
 {
   // create will allocate continous memory
-  image_buffer.create(width, height, CV_TYPE);
+  image_buffer.create(camera_info->width, camera_info->height, CV_TYPE);
   light.color = glm::vec3(1, 1, 1);
 }
 
@@ -75,7 +75,7 @@ auto ArRender::render(const geometry_msgs::TransformStamped &camera_pose,
   return cv_image.toImageMsg();
 }
 
-scigl_render::CameraIntrinsics ArRender::from_camera_info(
+scigl_render::CameraIntrinsics ArRender::convert_camera_info(
     const sensor_msgs::CameraInfoConstPtr &camera_info,
     double min_depth, double max_depth)
 {

@@ -31,7 +31,6 @@ public:
   */
   ArRender(const std::string &model_path,
            const sensor_msgs::CameraInfoConstPtr &camera_info,
-           int width = 640, int height = 480,
            double min_depth = 0.01, double max_depth = 10);
 
   /*!
@@ -48,6 +47,13 @@ public:
       const geometry_msgs::TransformStamped &object_pose,
       const sensor_msgs::ImageConstPtr &image);
 
+  /*!
+  Creates opengl camera intrinsics from the camera info.
+  */
+  static scigl_render::CameraIntrinsics convert_camera_info(
+      const sensor_msgs::CameraInfoConstPtr &camera_info,
+      double min_depth = 0.2, double max_depth = 10);
+
 private:
   // draw offscreen
   scigl_render::GLContext gl_context;
@@ -62,10 +68,9 @@ private:
   scigl_render::Shader shader;
   scigl_render::TextureFullscreenRender image_render;
 
-  static scigl_render::CameraIntrinsics from_camera_info(
-      const sensor_msgs::CameraInfoConstPtr &camera_info,
-      double min_depth = 0.2, double max_depth = 10);
-
+  /*!
+  Converts a tf2 transformation to a pose that can be used in OpenGL.
+  */
   static auto convert_pose(const geometry_msgs::TransformStamped &tf_pose)
       -> scigl_render::QuaternionPose;
 };
