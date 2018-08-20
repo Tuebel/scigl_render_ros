@@ -2,6 +2,7 @@
 #include <cv_bridge/cv_bridge.h>
 #include <opencv2/core/core.hpp>
 #include <ros/console.h>
+#include <scigl_render/check_gl_error.hpp>
 #include <scigl_render/shader/single_texture_shader.hpp>
 #include <scigl_render_ros/ar_render.hpp>
 
@@ -26,9 +27,14 @@ ArRender::ArRender(const std::string &model_path,
       shader(scigl_render::SingleTextureShader::create_shader()),
       image_render(camera_info->width, camera_info->height, INTERNAL_FORMAT)
 {
-  // create will allocate continous memory
-  image_buffer.create(camera_info->width, camera_info->height, CV_TYPE);
+  // cv::Mat::create will allocate continous memory
+  image_buffer.create(camera_info->height, camera_info->width, CV_TYPE);
   light.color = glm::vec3(1, 1, 1);
+  // Configure OpenGL
+  // Configure the global rendering settings
+  glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
+  glEnable(GL_DEPTH_TEST);
+  scigl_render::check_gl_error("creatin ArRender");
 }
 
 auto ArRender::render(const geometry_msgs::TransformStamped &camera_pose,
@@ -38,7 +44,7 @@ auto ArRender::render(const geometry_msgs::TransformStamped &camera_pose,
 {
   try
   {
-    // convert the image
+    // convert the image to origin bottom left
     auto cv_ptr = cv_bridge::toCvShare(image, IMAGE_ENCODING);
     auto gl_image = cv_ptr->image;
     cv::flip(cv_ptr->image, gl_image, 0);
@@ -51,6 +57,7 @@ auto ArRender::render(const geometry_msgs::TransformStamped &camera_pose,
     offscreen_render.activate_fbo();
     image_render.draw(gl_image.data, FORMAT, TYPE);
     // render the object on top
+    shader.activate();
     camera.set_in_shader(shader);
     light.set_in_shader(shader);
     model.draw(shader);
@@ -63,6 +70,8 @@ auto ArRender::render(const geometry_msgs::TransformStamped &camera_pose,
       memcpy(image_buffer.data, data,
              image_buffer.total() * image_buffer.elemSize());
     });
+    // flip the buffer for the origin in the top-left
+    cv::flip(image_buffer, image_buffer, 0);
   }
   catch (cv_bridge::Exception &e)
   {
@@ -72,6 +81,7 @@ auto ArRender::render(const geometry_msgs::TransformStamped &camera_pose,
   cv_bridge::CvImage cv_image(image->header, IMAGE_ENCODING, image_buffer);
   cv_image.header.seq = seq++;
   cv_image.header.stamp = ros::Time::now();
+  scigl_render::check_gl_error("rendering");
   return cv_image.toImageMsg();
 }
 

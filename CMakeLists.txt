@@ -3,7 +3,7 @@ project(scigl_render_ros)
 
 # Default ROS Kinetic configurations for compilation
 if(NOT CMAKE_CXX_STANDARD)
-  set(CMAKE_CXX_STANDARD 11)
+  set(CMAKE_CXX_STANDARD 14)
 endif()
 if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   add_compile_options(-Wall -Wextra -Wpedantic)
@@ -39,13 +39,14 @@ target_link_libraries(scigl_render_ros PUBLIC
   scigl_render)
 
 # executables
-# add_executable(scigl_render_node)
-# target_link_libraries(scigl_render_node
-#   ${OpenCV_LIBS}
-#   scigl_render_ros)
+add_executable(ar_render_node)
+target_sources(ar_render_node PRIVATE src/ar_render_node.cpp)
+target_link_libraries(ar_render_node
+  ${OpenCV_LIBS}
+  scigl_render_ros)
 
 # installation
-install(TARGETS scigl_render_ros # scigl_render_node
+install(TARGETS scigl_render_ros ar_render_node
   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}

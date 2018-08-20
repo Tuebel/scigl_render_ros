@@ -1,4 +1,5 @@
 #include <future>
+#include <memory>
 #include <image_transport/image_transport.h>
 #include <ros/ros.h>
 #include <scigl_render_ros/ar_render.hpp>
@@ -20,11 +21,12 @@ public:
     private_nh.param<std::string>("object_frame_id", object_frame_id, "object");
     // camera topic
     private_nh.param<std::string>(
-        "camera_base_topic", camera_base_topic, "/camera");
+        "camera_base_topic", camera_base_topic, "/camera/image_raw");
     // publisher for the augmented reality image
-    ar_publisher = img_transport.advertiseCamera("/ar_camera", 1);
+    ar_publisher = img_transport.advertiseCamera("/ar_image/image_raw", 1);
     // model to render
-    private_nh.param<std::string>("model_path", model_path);
+    private_nh.param<std::string>("model_path", model_path,
+                                  "/model/default.3ds");
   }
 
   /*!
@@ -35,19 +37,19 @@ public:
     using namespace sensor_msgs;
     scigl_render_ros::ArRender ar_render(model_path, init_camera());
     // subscribe the images and publish the modified ones
-    image_transport::CameraSubscriber subscriber =
+    image_transport::CameraSubscriber ar_subscriber =
         img_transport.subscribeCamera(
             camera_base_topic, 1,
-            [this, &ar_render](const ImageConstPtr &image, CameraInfoConstPtr info) {
-              // Get the latest poses
+            [this, &ar_render](const ImageConstPtr &img, const CameraInfoConstPtr &info) {
+              // Poses in target frame world
               auto camera_pose =
-                  tf_buffer.lookupTransform(
-                      camera_frame_id, world_frame_id, ros::Time(0));
+                  tf_buffer.lookupTransform(world_frame_id,
+                                            camera_frame_id, ros::Time(0));
               auto object_pose =
-                  tf_buffer.lookupTransform(
-                      object_frame_id, world_frame_id, ros::Time(0));
+                  tf_buffer.lookupTransform(world_frame_id,
+                                            object_frame_id, ros::Time(0));
               // Render the new image and publish it
-              auto ar_image = ar_render.render(camera_pose, object_pose, image);
+              auto ar_image = ar_render.render(camera_pose, object_pose, img);
               ar_publisher.publish(ar_image, info);
             });
     // block to keep ar_render in scope
@@ -69,7 +71,6 @@ private:
   std::string object_frame_id;
   // model to render
   std::string model_path;
-
   /*!
   Waits for a camera message and extracts the info.
   */
@@ -79,14 +80,7 @@ private:
     using namespace sensor_msgs;
     // create a promise that will be filled when receiving the first image
     std::promise<CameraInfoConstPtr> info_promise;
-    CameraSubscriber subscriber =
-        img_transport.subscribeCamera(
-            camera_base_topic, 1,
-            [&info_promise](const ImageConstPtr &, CameraInfoConstPtr info) {
-              info_promise.set_value(info);
-            });
-    // Get the value from the promise
-    return info_promise.get_future().get();
+    return ros::topic::waitForMessage<CameraInfo>("camera/camera_info");
   }
 };
 
@@ -98,8 +92,9 @@ int main(int argc, char **argv)
 {
   // init ros
   ros::init(argc, argv, "ar_render_node");
-  ArRenderNode node;
+  ros::NodeHandle nh;
+  ArRenderNode render_node;
   // will block/spin
-  node.run();
+  render_node.run();
   return EXIT_SUCCESS;
 }
