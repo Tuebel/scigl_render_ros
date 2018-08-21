@@ -16,7 +16,6 @@ public:
     ros::NodeHandle private_nh("~");
     // frames
     private_nh.param<std::string>("world_frame_id", world_frame_id, "world");
-    private_nh.param<std::string>("camera_frame_id", camera_frame_id, "camera");
     private_nh.param<std::string>("object_frame_id", object_frame_id, "object");
     private_nh.param<std::string>("light_frame_id", light_frame_id, "light");
     // camera topic
@@ -46,7 +45,8 @@ public:
               {
                 auto camera_pose =
                     tf_buffer.lookupTransform(world_frame_id,
-                                              camera_frame_id, ros::Time(0));
+                                              info->header.frame_id,
+                                              ros::Time(0));
                 auto object_pose =
                     tf_buffer.lookupTransform(world_frame_id,
                                               object_frame_id, ros::Time(0));
@@ -78,7 +78,6 @@ private:
   image_transport::CameraPublisher ar_publisher;
   // world frame is the base of the other frames
   std::string world_frame_id;
-  std::string camera_frame_id;
   std::string object_frame_id;
   std::string light_frame_id;
   // model to render
