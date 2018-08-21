@@ -1,4 +1,3 @@
-#include <future>
 #include <memory>
 #include <image_transport/image_transport.h>
 #include <ros/ros.h>
@@ -89,11 +88,9 @@ private:
   */
   sensor_msgs::CameraInfoConstPtr init_camera()
   {
-    using namespace image_transport;
-    using namespace sensor_msgs;
-    // create a promise that will be filled when receiving the first image
-    std::promise<CameraInfoConstPtr> info_promise;
-    return ros::topic::waitForMessage<CameraInfo>("camera/camera_info");
+    auto parent_ns = ros::names::parentNamespace(camera_base_topic);
+    auto info_topic = ros::names::append(parent_ns, "camera_info");
+    return ros::topic::waitForMessage<sensor_msgs::CameraInfo>(info_topic);
   }
 };
 
