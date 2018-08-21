@@ -7,7 +7,6 @@
   to render the object pose into the cameras image for augmented reality. Is a
   nice test for your camera calibration.
   </description>
-
   <author email="tim.uebelhoer@outlook.de">Tim Übelhör</author>
   <maintainer email="tim.uebelhoer@outlook.de">Tim Übelhör</maintainer>
   <license>MIT</license>

@@ -23,8 +23,7 @@ catkin_package(
  INCLUDE_DIRS include
  LIBRARIES scigl_render_ros
  CATKIN_DEPENDS cv_bridge image_transport roscpp tf2_ros
- DEPENDS OpenCV scigl_render
-)
+ DEPENDS OpenCV scigl_render)
 
 
 # library
