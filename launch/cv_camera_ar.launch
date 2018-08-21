@@ -7,10 +7,14 @@ The objects pose is received.
   <!--Position of the camera in the world-->
   <node pkg="tf2_ros" type="static_transform_publisher" name="camera_tf" args="0 0 0 0 0 0 world camera"/>
   <!--Position of the object in the world-->
-  <node pkg="tf2_ros" type="static_transform_publisher" name="object_tf" args="0 0 0.25 0 0 0 world object"/>
+  <node pkg="tf2_ros" type="static_transform_publisher" name="object_tf" args="-0.2 -0.2 1 1.5708 1.5708 1.5708 world object"/>
+  <!--Position of the light in the world -->
+  <node pkg="tf2_ros" type="static_transform_publisher" name="light_tf" args="0 -1 1 0 0 0 world light"/>
   <!--Camera-->
   <node name="cv_camera_node" pkg="cv_camera" type="cv_camera_node">
     <remap from="/cv_camera_node" to="/camera"/>
+    <param name="image_width" value="640" type="int"/>
+    <param name="image_height" value="480" type="int"/>
   </node>
   <!--Augmented reality rendering-->
   <node name="cv_camera_ar" pkg="scigl_render_ros" type="ar_render_node">

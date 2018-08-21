@@ -39,12 +39,14 @@ public:
   \param camera_pose the pose of the camera n the world frame (ROS convention: 
   http://docs.ros.org/api/sensor_msgs/html/msg/CameraInfo.html)
   \param object_pose the pose of the object in the world frame
+  \param light_pose the pose of the light in the world frame
   \param image the image message.
   \return an image with the object render into
   */
   sensor_msgs::ImageConstPtr render(
       const geometry_msgs::TransformStamped &camera_pose,
       const geometry_msgs::TransformStamped &object_pose,
+      const geometry_msgs::TransformStamped &light_pose,
       const sensor_msgs::ImageConstPtr &image);
 
   /*!

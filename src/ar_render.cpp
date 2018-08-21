@@ -39,18 +39,19 @@ ArRender::ArRender(const std::string &model_path,
 
 auto ArRender::render(const geometry_msgs::TransformStamped &camera_pose,
                       const geometry_msgs::TransformStamped &object_pose,
+                      const geometry_msgs::TransformStamped &light_pose,
                       const sensor_msgs::ImageConstPtr &image)
     -> sensor_msgs::ImageConstPtr
 {
   try
   {
-    // convert the image to origin bottom left
+    // convert the image format (bottom left origin)
     auto cv_ptr = cv_bridge::toCvShare(image, IMAGE_ENCODING);
     auto gl_image = cv_ptr->image;
-    cv::flip(cv_ptr->image, gl_image, 0);
+    cv::flip(gl_image, gl_image, 0);
     // convert the poses
     camera.pose = convert_pose(camera_pose);
-    light.position = camera.pose.position;
+    light.position= convert_pose(light_pose).position;
     model.pose = convert_pose(object_pose);
     // render the image
     offscreen_render.clear_fbo();
@@ -70,7 +71,6 @@ auto ArRender::render(const geometry_msgs::TransformStamped &camera_pose,
       memcpy(image_buffer.data, data,
              image_buffer.total() * image_buffer.elemSize());
     });
-    // flip the buffer for the origin in the top-left
     cv::flip(image_buffer, image_buffer, 0);
   }
   catch (cv_bridge::Exception &e)

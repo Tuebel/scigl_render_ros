@@ -19,6 +19,7 @@ public:
     private_nh.param<std::string>("world_frame_id", world_frame_id, "world");
     private_nh.param<std::string>("camera_frame_id", camera_frame_id, "camera");
     private_nh.param<std::string>("object_frame_id", object_frame_id, "object");
+    private_nh.param<std::string>("light_frame_id", light_frame_id, "light");
     // camera topic
     private_nh.param<std::string>(
         "camera_base_topic", camera_base_topic, "/camera/image_raw");
@@ -48,8 +49,12 @@ public:
               auto object_pose =
                   tf_buffer.lookupTransform(world_frame_id,
                                             object_frame_id, ros::Time(0));
+              auto light_pose =
+                  tf_buffer.lookupTransform(world_frame_id,
+                                            light_frame_id, ros::Time(0));
               // Render the new image and publish it
-              auto ar_image = ar_render.render(camera_pose, object_pose, img);
+              auto ar_image = ar_render.render(camera_pose, object_pose,
+                                               light_pose, img);
               ar_publisher.publish(ar_image, info);
             });
     // block to keep ar_render in scope
@@ -69,6 +74,7 @@ private:
   std::string world_frame_id;
   std::string camera_frame_id;
   std::string object_frame_id;
+  std::string light_frame_id;
   // model to render
   std::string model_path;
   /*!
