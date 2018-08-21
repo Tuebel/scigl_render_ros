@@ -43,19 +43,26 @@ public:
             camera_base_topic, 1,
             [this, &ar_render](const ImageConstPtr &img, const CameraInfoConstPtr &info) {
               // Poses in target frame world
-              auto camera_pose =
-                  tf_buffer.lookupTransform(world_frame_id,
-                                            camera_frame_id, ros::Time(0));
-              auto object_pose =
-                  tf_buffer.lookupTransform(world_frame_id,
-                                            object_frame_id, ros::Time(0));
-              auto light_pose =
-                  tf_buffer.lookupTransform(world_frame_id,
-                                            light_frame_id, ros::Time(0));
-              // Render the new image and publish it
-              auto ar_image = ar_render.render(camera_pose, object_pose,
-                                               light_pose, img);
-              ar_publisher.publish(ar_image, info);
+              try
+              {
+                auto camera_pose =
+                    tf_buffer.lookupTransform(world_frame_id,
+                                              camera_frame_id, ros::Time(0));
+                auto object_pose =
+                    tf_buffer.lookupTransform(world_frame_id,
+                                              object_frame_id, ros::Time(0));
+                auto light_pose =
+                    tf_buffer.lookupTransform(world_frame_id,
+                                              light_frame_id, ros::Time(0));
+                // Render the new image and publish it
+                auto ar_image = ar_render.render(camera_pose, object_pose,
+                                                 light_pose, img);
+                ar_publisher.publish(ar_image, info);
+              }
+              catch (tf2::TransformException &ex)
+              {
+                ROS_WARN("%s", ex.what());
+              }
             });
     // block to keep ar_render in scope
     ros::spin();

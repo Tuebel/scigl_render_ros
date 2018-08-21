@@ -7,7 +7,10 @@ The objects pose is received.
   <!--Position of the camera in the world-->
   <node pkg="tf2_ros" type="static_transform_publisher" name="camera_tf" args="0 0 0 0 0 0 world camera"/>
   <!--Position of the object in the world-->
-  <node pkg="tf2_ros" type="static_transform_publisher" name="object_tf" args="-0.2 -0.2 1 1.5708 1.5708 1.5708 world object"/>
+  <node name="charuco_detect_node" pkg="charuco_detect" type="charuco_detect_node">
+    <remap from="/camera/color/image_raw" to="/camera/image_raw"/>
+  </node>
+  <node pkg="tf2_ros" type="static_transform_publisher" name="object_tf" args="0 0 0 0 0 0 charuco object"/>
   <!--Position of the light in the world -->
   <node pkg="tf2_ros" type="static_transform_publisher" name="light_tf" args="0 -1 1 0 0 0 world light"/>
   <!--Camera-->
@@ -18,6 +21,6 @@ The objects pose is received.
   </node>
   <!--Augmented reality rendering-->
   <node name="cv_camera_ar" pkg="scigl_render_ros" type="ar_render_node">
-    <param name="model_path" value="$(find scigl_render)/model/monkey.3ds" type="str"/>
+    <param name="model_path" value="$(find scigl_render)/model/coordinates.3ds" type="str"/>
   </node>
 </launch>
