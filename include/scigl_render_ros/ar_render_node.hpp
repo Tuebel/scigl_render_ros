@@ -31,7 +31,6 @@ private:
   tf2_ros::Buffer tf_buffer;
   tf2_ros::TransformListener tf_listener;
   // receive and publish images
-  std::string camera_base_topic;
   image_transport::ImageTransport img_transport;
   image_transport::CameraPublisher ar_publisher;
   // world frame is the base of the other frames
@@ -46,10 +45,5 @@ private:
   */
   void camera_callback(const sensor_msgs::ImageConstPtr &img,
                        const sensor_msgs::CameraInfoConstPtr &info);
-
-  /*!
-  Waits for a camera message and extracts the info.
-  */
-  sensor_msgs::CameraInfoConstPtr init_camera();
 };
 } // namespace scigl_render_ros

@@ -7,20 +7,21 @@ The objects pose is received.
   <!--Position of the camera in the world-->
   <node pkg="tf2_ros" type="static_transform_publisher" name="camera_tf" args="0 0 0 0 0 0 world camera"/>
   <!--Position of the object in the world-->
-  <node name="charuco_detect_node" pkg="charuco_detect" type="charuco_detect_node">
-    <remap from="/camera/color/image_raw" to="/camera/image_raw"/>
-  </node>
+  <node name="charuco_detect_node" pkg="charuco_detect" type="charuco_detect_node"/>
   <node pkg="tf2_ros" type="static_transform_publisher" name="object_tf" args="0 0 0 0 0 0 charuco object"/>
   <!--Position of the light in the world -->
   <node pkg="tf2_ros" type="static_transform_publisher" name="light_tf" args="0 -2 0 0 0 0 world light"/>
   <!--Camera-->
   <node name="cv_camera_node" pkg="cv_camera" type="cv_camera_node">
-    <remap from="/cv_camera_node" to="/camera"/>
+    <remap from="/cv_camera_node" to="/camera/color"/>
     <param name="image_width" value="640" type="int"/>
     <param name="image_height" value="480" type="int"/>
   </node>
   <!--Augmented reality rendering-->
   <node name="cv_camera_ar" pkg="scigl_render_ros" type="ar_render_node">
+    <remap from="/camera/image_raw" to="/camera/color/image_raw"/>
     <param name="model_path" value="$(find scigl_render)/model/coordinates.3ds" type="str"/>
   </node>
+  <!--Show me what you've got-->
+  <node name="static_depth_visualization" pkg="rqt_image_view" type="rqt_image_view"/>
 </launch>

@@ -8,7 +8,8 @@ camera and object pose.
   <!--Position of the object in the world-->
   <node pkg="tf2_ros" type="static_transform_publisher" name="object_tf" args="0 0 0.1 0 0 1.5708 world object"/>
   <!--Depth rendering-->
-  <node name="stic_depth" pkg="scigl_render_ros" type="depth_render_node">
+  <node name="static_depth" pkg="scigl_render_ros" type="depth_render_node">
     <param name="model_path" value="$(find scigl_render)/model/monkey.3ds" type="str"/>
   </node>
+  <node name="static_depth_visualization" pkg="rqt_image_view" type="rqt_image_view"/>
 </launch>
