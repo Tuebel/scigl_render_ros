@@ -9,7 +9,7 @@
 
 namespace scigl_render_ros
 {
-struct RosConvert
+struct SciglConvert
 {
   /*!
   Convert a ROS transformation to a pose in the world coordinates of the
@@ -25,6 +25,12 @@ struct RosConvert
   static scigl_render::CameraIntrinsics convert_camera_info(
       const sensor_msgs::CameraInfoConstPtr &camera_info,
       double min_depth = 0.1, double max_depth = 10);
+
+  /*!
+  Convert the scigl_render intrinsics to a virtual camera info
+  */
+  static sensor_msgs::CameraInfoPtr convert_intrinsics(
+      const scigl_render::CameraIntrinsics &intrinsics);
 
   /*!
   Creates an OpenCV image from an ros image. The created image has the origin

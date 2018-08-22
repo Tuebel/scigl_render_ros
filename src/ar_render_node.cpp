@@ -50,7 +50,11 @@ void ArRenderNode::camera_callback(const sensor_msgs::ImageConstPtr &img,
     // Render the new image and publish it
     auto ar_image = ar_render->render(camera_pose, object_pose,
                                       light_pose, img);
-    ar_publisher.publish(ar_image, info);
+    ar_image->header.stamp = ros::Time::now();
+    // create copy to update time.
+    sensor_msgs::CameraInfoPtr cam_info(new sensor_msgs::CameraInfo(*info));
+    cam_info->header.stamp = ros::Time::now();
+    ar_publisher.publish(ar_image, cam_info);
   }
   catch (tf2::TransformException &ex)
   {

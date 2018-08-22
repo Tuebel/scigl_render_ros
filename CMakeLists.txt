@@ -30,7 +30,8 @@ catkin_package(
 add_library(scigl_render_ros)
 target_sources(scigl_render_ros PRIVATE
   src/ar_render.cpp
-  src/ros_convert.cpp)
+  src/depth_render.cpp
+  src/scigl_convert.cpp)
 target_include_directories(scigl_render_ros PUBLIC
   ${catkin_INCLUDE_DIRS}
   include)
@@ -44,6 +45,14 @@ target_sources(ar_render_node PRIVATE
   src/ar_render_node.cpp
   src/ar_render_main.cpp)
 target_link_libraries(ar_render_node
+  ${OpenCV_LIBS}
+  scigl_render_ros)
+
+add_executable(depth_render_node)
+target_sources(depth_render_node PRIVATE 
+  src/depth_render_node.cpp
+  src/depth_render_main.cpp)
+target_link_libraries(depth_render_node
   ${OpenCV_LIBS}
   scigl_render_ros)
 

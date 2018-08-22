@@ -1,9 +1,9 @@
-#include <scigl_render_ros/ros_convert.hpp>
+#include <scigl_render_ros/scigl_convert.hpp>
 #include <cv_bridge/cv_bridge.h>
 
 namespace scigl_render_ros
 {
-scigl_render::QuaternionPose RosConvert::convert_tf(
+scigl_render::QuaternionPose SciglConvert::convert_tf(
     const geometry_msgs::TransformStamped &tf_pose)
 {
   scigl_render::QuaternionPose result;
@@ -17,7 +17,7 @@ scigl_render::QuaternionPose RosConvert::convert_tf(
   return result;
 }
 
-scigl_render::CameraIntrinsics RosConvert::convert_camera_info(
+scigl_render::CameraIntrinsics SciglConvert::convert_camera_info(
     const sensor_msgs::CameraInfoConstPtr &camera_info,
     double min_depth, double max_depth)
 {
@@ -45,8 +45,25 @@ scigl_render::CameraIntrinsics RosConvert::convert_camera_info(
   return camera_intrinsics;
 }
 
-cv::Mat RosConvert::convert_ros_image(const sensor_msgs::ImageConstPtr &image,
-                                      const std::string &encoding)
+sensor_msgs::CameraInfoPtr SciglConvert::convert_intrinsics(
+    const scigl_render::CameraIntrinsics &intrinsics)
+{
+  sensor_msgs::CameraInfoPtr info;
+  //dimensions
+  info->width = intrinsics.width;
+  info->height = intrinsics.height;
+  // matrices
+  info->K = {intrinsics.f_x, 0, intrinsics.c_x,
+             0, intrinsics.f_y, intrinsics.c_y,
+             0, 0, 1};
+  info->P = {intrinsics.f_x, 0, intrinsics.c_x, 0,
+             0, intrinsics.f_y, intrinsics.c_y, 0,
+             0, 0, 1, 0};
+  return info;
+}
+
+cv::Mat SciglConvert::convert_ros_image(const sensor_msgs::ImageConstPtr &image,
+                                        const std::string &encoding)
 {
   auto cv_ptr = cv_bridge::toCvShare(image, encoding);
   auto gl_image = cv_ptr->image;
@@ -54,7 +71,7 @@ cv::Mat RosConvert::convert_ros_image(const sensor_msgs::ImageConstPtr &image,
   return gl_image;
 }
 
-sensor_msgs::ImagePtr RosConvert::convert_gl_image(
+sensor_msgs::ImagePtr SciglConvert::convert_gl_image(
     cv::Mat image, const std::string &encoding)
 {
   cv::flip(image, image, 0);
