@@ -39,7 +39,9 @@ target_link_libraries(scigl_render_ros PUBLIC
 
 # executables
 add_executable(ar_render_node)
-target_sources(ar_render_node PRIVATE src/ar_render_node.cpp)
+target_sources(ar_render_node PRIVATE 
+  src/ar_render_node.cpp
+  src/ar_render_main.cpp)
 target_link_libraries(ar_render_node
   ${OpenCV_LIBS}
   scigl_render_ros)
