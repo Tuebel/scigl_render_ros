@@ -58,7 +58,9 @@ void DepthRenderNode::timer_callback(const ros::TimerEvent &)
   auto image = depth_render->render(camera_pose, object_pose);
   // fill in the headers
   image->header.stamp = ros::Time::now();
-  cam_info->header.stamp = ros::Time::now();
+  image->header.frame_id = camera_frame_id;
+  cam_info->header.stamp = image->header.stamp;
+  cam_info->header.frame_id = image->header.frame_id;
   // publish it
   depth_publisher.publish(image, cam_info);
 }

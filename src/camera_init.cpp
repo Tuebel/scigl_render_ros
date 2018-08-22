@@ -20,7 +20,6 @@ auto CameraInit::wait_for_info(const std::string &base_topic,
         // set the promise so the future get() does not block anymore
         info_promise.set_value(info);
       });
-
   while (std::future_status::ready !=
          info_fut.wait_for(std::chrono::milliseconds(100)))
   {
