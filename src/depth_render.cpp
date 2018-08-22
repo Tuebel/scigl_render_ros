@@ -17,10 +17,10 @@ const GLenum TYPE = GL_FLOAT;
 const std::string IMAGE_ENCODING = sensor_msgs::image_encodings::TYPE_32FC1;
 
 DepthRender::DepthRender(const std::string &model_path,
-                         const scigl_render::CameraIntrinsics& intrinsics)
+                         const scigl_render::CameraIntrinsics &intrinsics)
     : gl_context(false, false, intrinsics.width, intrinsics.height),
-      offscreen_render(intrinsics.width, intrinsics.height,
-                       3 * 1, INTERNAL_FORMAT),
+      offscreen_render(intrinsics.width, intrinsics.height, sizeof(float),
+                       INTERNAL_FORMAT),
       camera(intrinsics),
       model(model_path),
       shader(scigl_render::DepthShader::create_shader())

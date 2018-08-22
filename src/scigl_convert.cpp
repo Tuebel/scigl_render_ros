@@ -48,7 +48,7 @@ scigl_render::CameraIntrinsics SciglConvert::convert_camera_info(
 sensor_msgs::CameraInfoPtr SciglConvert::convert_intrinsics(
     const scigl_render::CameraIntrinsics &intrinsics)
 {
-  sensor_msgs::CameraInfoPtr info;
+  sensor_msgs::CameraInfoPtr info(new sensor_msgs::CameraInfo());
   //dimensions
   info->width = intrinsics.width;
   info->height = intrinsics.height;

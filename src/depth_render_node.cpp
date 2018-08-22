@@ -23,13 +23,13 @@ DepthRenderNode::DepthRenderNode() : tf_listener(tf_buffer),
   // https://www.mrpt.org/tutorials/programming/miscellaneous/kinect-calibration/)
   private_nh.param<int>("width", intrinsics.width, 640);
   private_nh.param<int>("height", intrinsics.height, 480);
-  private_nh.param<float>("near", intrinsics.near, 0.1);
+  private_nh.param<float>("near", intrinsics.near, 0.01);
   private_nh.param<float>("far", intrinsics.far, 10);
   private_nh.param<float>("c_x", intrinsics.c_x, 314.649173);
   private_nh.param<float>("c_y", intrinsics.c_y, 240.160459);
   private_nh.param<float>("f_x", intrinsics.f_x, 572.882768);
   private_nh.param<float>("f_y", intrinsics.f_y, 542.739980);
-  private_nh.param<float>("s", intrinsics.s, 542.739980);
+  private_nh.param<float>("s", intrinsics.s, 0);
   // quite a pain to create
   cam_info = SciglConvert::convert_intrinsics(intrinsics);
   cam_info->header.frame_id = camera_frame_id;

@@ -22,9 +22,9 @@ ArRender::ArRender(const std::string &model_path,
                    double min_depth, double max_depth)
     : gl_context(false, false, camera_info->width, camera_info->height),
       offscreen_render(camera_info->width, camera_info->height,
-                       3 * 1, INTERNAL_FORMAT),
+                       3 * sizeof(unsigned char), INTERNAL_FORMAT),
       camera(SciglConvert::convert_camera_info(camera_info, min_depth,
-                                             max_depth)),
+                                               max_depth)),
       model(model_path),
       shader(scigl_render::SingleTextureShader::create_shader()),
       image_render(camera_info->width, camera_info->height, INTERNAL_FORMAT)
