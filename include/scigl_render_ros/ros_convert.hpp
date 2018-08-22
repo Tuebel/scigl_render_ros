@@ -1,6 +1,6 @@
 #pragma once
 #include <geometry_msgs/TransformStamped.h>
-#include <opencv2/core/core.hpp>
+#include <opencv2/core/mat.hpp>
 #include <scigl_render/scene/camera_intrinsics.hpp>
 #include <scigl_render/scene/pose.hpp>
 #include <sensor_msgs/CameraInfo.h>
