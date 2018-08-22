@@ -12,7 +12,7 @@ The objects pose is received.
   </node>
   <node pkg="tf2_ros" type="static_transform_publisher" name="object_tf" args="0 0 0 0 0 0 charuco object"/>
   <!--Position of the light in the world -->
-  <node pkg="tf2_ros" type="static_transform_publisher" name="light_tf" args="0 -1 1 0 0 0 world light"/>
+  <node pkg="tf2_ros" type="static_transform_publisher" name="light_tf" args="0 -2 0 0 0 0 world light"/>
   <!--Camera-->
   <node name="cv_camera_node" pkg="cv_camera" type="cv_camera_node">
     <remap from="/cv_camera_node" to="/camera"/>
