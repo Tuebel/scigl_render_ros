@@ -49,19 +49,11 @@ public:
       const geometry_msgs::TransformStamped &light_pose,
       const sensor_msgs::ImageConstPtr &image);
 
-  /*!
-  Creates opengl camera intrinsics from the camera info.
-  */
-  static scigl_render::CameraIntrinsics convert_camera_info(
-      const sensor_msgs::CameraInfoConstPtr &camera_info,
-      double min_depth = 0.2, double max_depth = 10);
-
 private:
   // draw offscreen
   scigl_render::GLContext gl_context;
   scigl_render::OffscreenRender offscreen_render;
   cv::Mat image_buffer;
-  uint32_t seq = 0;
   // rendering scene
   scigl_render::CvCamera camera;
   scigl_render::DiffuseLight light;
@@ -69,11 +61,5 @@ private:
   // shaders
   scigl_render::Shader shader;
   scigl_render::TextureFullscreenRender image_render;
-
-  /*!
-  Converts a tf2 transformation to a pose that can be used in OpenGL.
-  */
-  static auto convert_pose(const geometry_msgs::TransformStamped &tf_pose)
-      -> scigl_render::QuaternionPose;
 };
 } // namespace scigl_render_ros

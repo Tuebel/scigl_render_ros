@@ -29,7 +29,8 @@ catkin_package(
 # library
 add_library(scigl_render_ros)
 target_sources(scigl_render_ros PRIVATE
-  src/ar_render.cpp)
+  src/ar_render.cpp
+  src/ros_convert.cpp)
 target_include_directories(scigl_render_ros PUBLIC
   ${catkin_INCLUDE_DIRS}
   include)
