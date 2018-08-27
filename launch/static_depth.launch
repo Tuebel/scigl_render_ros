@@ -10,6 +10,12 @@ camera and object pose.
   <!--Depth rendering-->
   <node name="static_depth" pkg="scigl_render_ros" type="depth_render_node">
     <param name="model_path" value="$(find scigl_render)/model/monkey.3ds" type="str"/>
+    <param name="width" value="1440"/>
+    <param name="height" value="1080"/>
+    <param name="f_x" value="1000"/>
+    <param name="f_y" value="1000"/>
+    <param name="c_x" value="720"/>
+    <param name="c_y" value="540"/>
   </node>
   <node name="static_depth_visualization" pkg="rqt_image_view" type="rqt_image_view"/>
 </launch>
