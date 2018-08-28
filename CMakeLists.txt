@@ -16,6 +16,8 @@ find_package(catkin REQUIRED COMPONENTS
   roscpp
   tf2_ros)
 find_package(OpenCV REQUIRED)
+# prefer new ABI for OpenGL
+set(OpenGL_GL_PREFERENCE "GLVND")
 find_package(scigl_render REQUIRED)
 
 # packaging

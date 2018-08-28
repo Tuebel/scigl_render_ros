@@ -51,10 +51,10 @@ void DepthRenderNode::run()
 void DepthRenderNode::timer_callback(const ros::TimerEvent &)
 {
   // Render with latest transform
-  auto camera_pose = tf_buffer.lookupTransform(world_frame_id,
-                                               camera_frame_id, ros::Time(0));
-  auto object_pose = tf_buffer.lookupTransform(world_frame_id,
-                                               object_frame_id, ros::Time(0));
+  auto camera_pose = tf_buffer.lookupTransform(world_frame_id, camera_frame_id,
+                                               ros::Time(0), ros::Duration(1));
+  auto object_pose = tf_buffer.lookupTransform(world_frame_id, object_frame_id,
+                                               ros::Time(0), ros::Duration(1));
   auto image = depth_render->render(camera_pose, object_pose);
   // fill in the headers
   image->header.stamp = ros::Time::now();

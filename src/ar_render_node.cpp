@@ -42,11 +42,14 @@ void ArRenderNode::camera_callback(const sensor_msgs::ImageConstPtr &img,
   {
     auto camera_pose = tf_buffer.lookupTransform(world_frame_id,
                                                  info->header.frame_id,
-                                                 ros::Time(0));
+                                                 ros::Time(0),
+                                                 ros::Duration(1));
     auto object_pose = tf_buffer.lookupTransform(world_frame_id,
-                                                 object_frame_id, ros::Time(0));
-    auto light_pose = tf_buffer.lookupTransform(world_frame_id,
-                                                light_frame_id, ros::Time(0));
+                                                 object_frame_id,
+                                                 ros::Time(0),
+                                                 ros::Duration(1));
+    auto light_pose = tf_buffer.lookupTransform(world_frame_id, light_frame_id,
+                                                ros::Time(0), ros::Duration(1));
     // Render the new image and publish it
     auto ar_image = ar_render->render(camera_pose, object_pose,
                                       light_pose, img);
