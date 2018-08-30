@@ -5,11 +5,11 @@ camera and object pose.
 <launch>
   <!--Position of the camera in the world-->
   <node pkg="tf2_ros" type="static_transform_publisher" name="camera_tf" args="0 0 0 0 0 0 world camera"/>
-  <!--Position of the object in the world-->
-  <node pkg="tf2_ros" type="static_transform_publisher" name="object_tf" args="0 0 0.1 0 0 1.5708 world object"/>
+  <!--Position of the object in the world (yaw, pitch, roll /ZYX)-->
+  <node pkg="tf2_ros" type="static_transform_publisher" name="object_tf" args="0.02 0 0.08 0 2.61 0.52 world object"/>
   <!--Depth rendering-->
   <node name="static_depth" pkg="scigl_render_ros" type="depth_render_node">
-    <param name="model_path" value="$(find scigl_render)/model/monkey.3ds" type="str"/>
+    <param name="model_path" value="$(find scigl_render)/model/beckenkamm.3ds" type="str"/>
     <param name="width" value="1440"/>
     <param name="height" value="1080"/>
     <param name="f_x" value="1000"/>
