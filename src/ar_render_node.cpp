@@ -3,7 +3,7 @@
 
 namespace scigl_render_ros
 {
-const std::string CAMERA_TOPIC = "camera/image_raw";
+const std::string CAMERA_TOPIC = "camera/color/image_raw";
 
 ArRenderNode::ArRenderNode() : tf_listener(tf_buffer),
                                img_transport(node_handle)
@@ -14,7 +14,7 @@ ArRenderNode::ArRenderNode() : tf_listener(tf_buffer),
   private_nh.param<std::string>("object_frame_id", object_frame_id, "object");
   private_nh.param<std::string>("light_frame_id", light_frame_id, "light");
   // publisher for the augmented reality image
-  ar_publisher = img_transport.advertiseCamera("/ar_image/image_raw", 1);
+  ar_publisher = img_transport.advertiseCamera("/ar_camera/color/image_raw", 1);
   // model to render
   private_nh.param<std::string>("model_path", model_path, "/model/default.3ds");
 }
@@ -22,10 +22,11 @@ ArRenderNode::ArRenderNode() : tf_listener(tf_buffer),
 void ArRenderNode::run()
 {
   namespace ph = std::placeholders;
+  ROS_INFO("waiting for camera info");  
   auto camera_info = CameraInit::wait_for_info(CAMERA_TOPIC, node_handle);
   ar_render = std::unique_ptr<ArRender>(new ArRender(
       model_path, camera_info));
-  ROS_ERROR("ready to render");
+  ROS_INFO("initalized OpenGL renderer");
   // subscribe the images and publish the modified ones
   image_transport::CameraSubscriber ar_subscriber =
       img_transport.subscribeCamera(CAMERA_TOPIC, 1,
