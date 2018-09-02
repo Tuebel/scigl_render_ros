@@ -12,12 +12,12 @@ The objects pose is received.
     <param name="camera_frame_id" value="camera_color_optical_frame"/>
   </node>
   <!--ar_render_node renders the object pose-->
-  <node pkg="tf2_ros" type="static_transform_publisher" name="object_tf" args="0 0 0 0 0 0 aruco_marker_23 object"/>
+  <node pkg="tf2_ros" type="static_transform_publisher" name="object_tf" args="0.008 0.09 0.035 0 0 0 aruco_marker_23 object"/> 
   <!--Position of the light in the world -->
-  <node pkg="tf2_ros" type="static_transform_publisher" name="light_tf" args="0 -2 0 0 0 0 world light"/>
+  <node pkg="tf2_ros" type="static_transform_publisher" name="light_tf" args="0 0 2 0 0 0 world light"/>
   <!--Camera should be sending on /camera/color/image_raw-->
   <!--Augmented reality rendering-->
   <node name="ar_render_node" pkg="scigl_render_ros" type="ar_render_node">
-    <param name="model_path" value="$(find scigl_render)/model/coordinates.3ds" type="str"/>
+    <param name="model_path" value="$(find scigl_render)/model/beckenkamm.3ds" type="str"/>
   </node>
 </launch>

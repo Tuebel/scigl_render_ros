@@ -22,7 +22,7 @@ ArRenderNode::ArRenderNode() : tf_listener(tf_buffer),
 void ArRenderNode::run()
 {
   namespace ph = std::placeholders;
-  ROS_INFO("waiting for camera info");  
+  ROS_INFO("waiting for camera info");
   auto camera_info = CameraInit::wait_for_info(CAMERA_TOPIC, node_handle);
   ar_render = std::unique_ptr<ArRender>(new ArRender(
       model_path, camera_info));
@@ -30,13 +30,12 @@ void ArRenderNode::run()
   // subscribe the images and publish the modified ones
   image_transport::CameraSubscriber ar_subscriber =
       img_transport.subscribeCamera(CAMERA_TOPIC, 1,
-                                    std::bind(&ArRenderNode::camera_callback,
-                                              this, ph::_1, ph::_2));
+                                    &ArRenderNode::camera_callback, this);
   // block to keep ar_render in scope
   ros::spin();
 }
 
-void ArRenderNode::camera_callback(const sensor_msgs::ImageConstPtr &img,
+void ArRenderNode::camera_callback(const sensor_msgs::ImageConstPtr &image,
                                    const sensor_msgs::CameraInfoConstPtr &info)
 {
   try
@@ -51,20 +50,22 @@ void ArRenderNode::camera_callback(const sensor_msgs::ImageConstPtr &img,
                                                  ros::Duration(1));
     auto light_pose = tf_buffer.lookupTransform(world_frame_id, light_frame_id,
                                                 ros::Time(0), ros::Duration(1));
-    // Render the new image and publish it
-    auto ar_image = ar_render->render(camera_pose, object_pose,
-                                      light_pose, img);
-    ar_image->header.stamp = ros::Time::now();
-    ar_image->header.frame_id = img->header.frame_id;
-    // create copy to update time.
-    sensor_msgs::CameraInfoPtr cam_info(new sensor_msgs::CameraInfo(*info));
-    cam_info->header.frame_id = ar_image->header.frame_id;
-    cam_info->header.stamp = ar_image->header.stamp;
-    ar_publisher.publish(ar_image, cam_info);
+    // publish rendered image
+    if (ar_publisher.getNumSubscribers() > 0)
+    {
+      ar_publisher.publish(ar_render->render(camera_pose, object_pose,
+                                             light_pose, image),
+                           info);
+    }
   }
   catch (tf2::TransformException &ex)
   {
     ROS_WARN("%s", ex.what());
+    // avoid black screen
+    if (ar_publisher.getNumSubscribers() > 0)
+    {
+      ar_publisher.publish(image, info);
+    }
   }
 }
 } // namespace scigl_render_ros

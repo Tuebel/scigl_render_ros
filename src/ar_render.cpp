@@ -78,7 +78,7 @@ auto ArRender::render(const geometry_msgs::TransformStamped &camera_pose,
   // create ros message
   auto res = SciglConvert::convert_gl_image(image_buffer, IMAGE_ENCODING);
   res->header.frame_id = image->header.frame_id;
-  res->header.seq = image->header.seq;
+  res->header.stamp = image->header.stamp;
   return res;
 }
 } // namespace scigl_render_ros
