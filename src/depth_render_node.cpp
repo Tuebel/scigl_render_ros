@@ -15,7 +15,7 @@ DepthRenderNode::DepthRenderNode() : tf_listener(tf_buffer),
   private_nh.param<std::string>("camera_frame_id", camera_frame_id, "camera");
   private_nh.param<std::string>("object_frame_id", object_frame_id, "object");
   // publisher for the augmented reality image
-  depth_publisher = img_transport.advertiseCamera("/depth/image_raw", 1);
+  depth_publisher = img_transport.advertiseCamera("/depth/image", 1);
   // model to render
   private_nh.param<std::string>("model_path", model_path,
                                 "/model/default.3ds");

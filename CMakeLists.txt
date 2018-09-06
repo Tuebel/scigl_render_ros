@@ -12,6 +12,7 @@ endif()
 # find dependencies
 find_package(catkin REQUIRED COMPONENTS
   cv_bridge
+  image_geometry
   image_transport
   roscpp
   tf2_ros)
@@ -24,7 +25,7 @@ find_package(scigl_render REQUIRED)
 catkin_package(
  INCLUDE_DIRS include
  LIBRARIES scigl_render_ros
- CATKIN_DEPENDS cv_bridge image_transport roscpp tf2_ros
+ CATKIN_DEPENDS cv_bridge image_geometry image_transport roscpp tf2_ros
  DEPENDS OpenCV scigl_render)
 
 

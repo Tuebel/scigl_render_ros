@@ -1,3 +1,4 @@
+#include <image_geometry/pinhole_camera_model.h>
 #include <scigl_render_ros/scigl_convert.hpp>
 #include <cv_bridge/cv_bridge.h>
 
@@ -21,15 +22,17 @@ scigl_render::CameraIntrinsics SciglConvert::convert_camera_info(
     const sensor_msgs::CameraInfoConstPtr &camera_info,
     double min_depth, double max_depth)
 {
+  image_geometry::PinholeCameraModel pinhole_cam;
+  pinhole_cam.fromCameraInfo(camera_info);
   scigl_render::CameraIntrinsics camera_intrinsics;
   // dimension
   camera_intrinsics.width = camera_info->width;
   camera_intrinsics.height = camera_info->height;
   // intrinsic matrix K
-  camera_intrinsics.f_x = camera_info->K[0];
-  camera_intrinsics.f_y = camera_info->K[4];
-  camera_intrinsics.c_x = camera_info->K[2];
-  camera_intrinsics.c_y = camera_info->K[5];
+  camera_intrinsics.f_x = pinhole_cam.fx();
+  camera_intrinsics.f_y = pinhole_cam.fy();
+  camera_intrinsics.c_x = pinhole_cam.cx();
+  camera_intrinsics.c_y = pinhole_cam.cy();
   camera_intrinsics.s = 0;
   // depth range for OpenGL
   if (min_depth == 0)
