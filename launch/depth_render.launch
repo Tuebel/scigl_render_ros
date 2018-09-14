@@ -9,13 +9,13 @@ camera and object pose.
   <node pkg="tf2_ros" type="static_transform_publisher" name="object_tf" args="0.02 0 0.08 0 2.61 0.52 world object"/>
   <!--Depth rendering-->
   <node name="static_depth" pkg="scigl_render_ros" type="depth_render_node">
-    <param name="model_path" value="$(find scigl_render)/model/beckenkamm.3ds" type="str"/>
-    <param name="width" value="1440"/>
-    <param name="height" value="1080"/>
-    <param name="f_x" value="1000"/>
-    <param name="f_y" value="1000"/>
-    <param name="c_x" value="720"/>
-    <param name="c_y" value="540"/>
+    <param name="model_path" value="$(find scigl_render)/model/ilium.3ds" type="str"/>
+    <param name="width" value="640"/>
+    <param name="height" value="480"/>
+    <param name="f_x" value="500"/>
+    <param name="f_y" value="500"/>
+    <param name="c_x" value="320"/>
+    <param name="c_y" value="240"/>
   </node>
   <node name="static_depth_visualization" pkg="rqt_image_view" type="rqt_image_view"/>
 </launch>

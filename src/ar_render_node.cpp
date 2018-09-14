@@ -16,7 +16,7 @@ ArRenderNode::ArRenderNode() : tf_listener(tf_buffer),
   // publisher for the augmented reality image
   ar_publisher = img_transport.advertiseCamera("/ar_camera/color/image_raw", 1);
   // model to render
-  private_nh.param<std::string>("model_path", model_path, "/model/default.3ds");
+  private_nh.param<std::string>("model_path", model_path, "/model/beckenkamm.3ds");
 }
 
 void ArRenderNode::run()
