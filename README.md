@@ -1,2 +1,1 @@
-# Info
-ROS wrapper for the scigl_render OpenGL rendering library
+# moved to https://git.rwth-aachen.de/robo_guide/scigl_render_ros
